@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="css/boot.css" rel="stylesheet" id="bootstrap-css">
+    <link href="css/product.css" rel="stylesheet">
+    <link href="css/login.css" rel="stylesheet">
+    <link href="css/sprod.css" rel="stylesheet">
+     <style>
+     .product_view .modal-dialog{max-width: 800px; width: 100%;}
+
+    a.list-group-item {
+        height:auto;
+        min-height:220px;
+    }
+    a.list-group-item.active small {
+        color:#fff;
+    }
+
+    </style>
+        <style class="cp-pen-styles">
+
+    @-webkit-keyframes rotating {
+      from {
+        -webkit-transform: rotate(0deg);
+      }
+      to {
+        -webkit-transform: rotate(360deg);
+      }
+    }
+    @-moz-keyframes rotating {
+      from {
+        -moz-transform: rotate(0deg);
+      }
+      to {
+        -moz-transform: rotate(360deg);
+      }
+    }
+    @-o-keyframes rotating {
+      from {
+        -o-transform: rotate(0deg);
+      }
+      to {
+        -o-transform: rotate(360deg);
+      }
+    }
+    @keyframes rotating {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    .comments {
+      width: 500px;
+      min-height: 150px;
+      position: absolute;
+      left: 275px;
+      margin: 15px auto;
+      padding: 20px;
+      font-family: "Helvetica Neue",arial,sans-serif;
+      font-size: 15px;
+    }
+    .comments .loader {
+      height: 45px;
+      width: 45px;
+      border: 4.5px solid rgba(0, 0, 0, 0.2);
+      border-radius: 50%;
+      border-left-color: #000;
+      position: absolute;
+      top: 70px;
+      left: 245.5px;
+      -webkit-animation: rotating 0.9s infinite linear;
+      -moz-animation: rotating 0.9s infinite linear;
+      -o-animation: rotating 0.9s infinite linear;
+      animation: rotating 0.9s infinite linear;
+    }
+    .comments .inner {
+      display: none;
+    }
+    .comments .inner .comment {
+      border: 1px dashed #ccc;
+      padding: 15px;
+      min-height: 48px;
+      margin-bottom: 10px;
+      color: #ccc;
+    }
+    .comments .inner .comment .avatar {
+      width: 48px;
+      height: 48px;
+      float: left;
+    }
+    .comments .inner .comment .body {
+      margin-left: 55px;
+    }
+    .comments .inner .comment .body p {
+      color: black;
+    }
+    .comments .inner .comment:hover {
+      color: rgba(0, 39, 59, 0.35);
+      background-color: rgba(200, 200, 200, 0.1);
+      border-style: solid;
+    }
+
+    .add-new {
+      margin-bottom: 55px;
+    }
+    .add-new .input {
+      display: block;
+      width: 475px;
+      border: 3px solid #ccc;
+      color: #888;
+      padding: 8px 10px;
+      outline: 0;
+      font-family: "Helvetica Neue",arial,sans-serif;
+      font-size: 15px;
+    }
+    .add-new .input.your-name {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+    }
+    .add-new .input.your-name.dived {
+      margin-top: 2px;
+      padding: 9px 10px 11px 10px;
+    }
+    .add-new .input.your-msg {
+      margin-top: -5px;
+      max-width: 475px;
+      max-height: 150px;
+      border-bottom-left-radius: 5px;
+      border-bottom-right-radius: 5px;
+    }
+    .add-new .send-msg {
+      border: 3px solid #ccc;
+      color: #888;
+      text-transform: uppercase;
+      font-weight: bold;
+      border-radius: 5px;
+      padding: 8px 10px;
+      background-color: transparent;
+      outline: 0;
+      float: right;
+      margin-right: -1px;
+      cursor: pointer;
+    }
+    .add-new .send-msg:hover {
+      color: white;
+      background-color: #ccc;
+    }
+
+    a {
+      color: #408ac9;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    </style>
+
+</head>
+  <div class="navbar navbar-inverse navbar-static-top">
+
+   <div class="container">
+
+        <div class="collapse navbar-collapse navHeaderCollapse">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a id = "allProductsClass" href="#">All products</a></li>
+            <li><a id = "purchasesRedirectClass" href="#">Your purchases</a></li>
+            <li><a id = "logout" href="#">Log out</a></li>
+            <li><a href = "#" data-toggle="modal" data-target="#loginModal">Log in</a></li>
+            <li><a href = "#" data-toggle="modal" data-target="#registrationModal">Registration</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+<body>
+
+
+<!------ Many Products ---------->
+
+<div class="productsWrapper">
+<div class="container">
+	<div class="row" id="productsRows">
+
+	</div>
+</div>
+</div>
+
+
+
+<!------ Single product ---------->
+<div class="singleProductWrapper">
+    <div class="container">
+        <div class="card">
+            <div class="container-fliud">
+                <div class="wrapper row">
+                    <div class="preview col-md-60" id="product-div">
+
+              <div class="preview-pic tab-content">
+              <div class="tab-pane active" id="pic-1"><img id = "prod_img"/></div>
+                </div>
+          </div>
+          <div class="details col-md-6">
+            <h3 class="product-title" id="prod_span"></h3>
+              <p class="product-description">
+              Here should be long product description.
+              Here should be long product description.
+              Here should be long product description.
+              Here should be long product description.
+              Here should be long product description.
+              Here should be long product description.
+              </p>
+            <h4 class="price">current price: <span id="price_span"></span></h4>
+            <h4 class="avaliable">avaliable: <span id="avaliable_span"></span></h4>
+            <div class="action">
+                <form action="" method = "post" id="purchaseButton">
+              <button class="add-to-cart btn btn-default" type="submit">Buy</button>
+              </form>
+            </div>
+          </div>
+       
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class='comments'>
+      <div class='loader'></div>
+      <div class='inner'>
+        <div class='add-new'>
+          <textarea class='input your-msg' placeholder='Type your message here...'></textarea>
+          <button class='send-msg'>Send message</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+
+<!------ Purchasses ---------->
+<div class="purchassesWrapper">
+    <div class="container">
+    <div class="row">
+        <div class="well">
+        <h1 class="text-center">Products you bought</h1>
+        <div class="list-group">
+          <div id="purchases_placeholder"></div>   
+                    <a href="#" class="list-group-item">
+                        <div class="media col-md-3">
+                        <figure class="pull-left">
+                            <img src="images/white.jpg" height="200" width="200"  alt="placehold.it/350x250" >
+                        </figure>
+                        </div>
+                        <div class="col-md-6">
+
+                        <h2 class="list-group-item-text">
+                            Total sum of all bought products
+                        </h2>
+                        </div>
+                        <div class="col-md-3 text-center">
+                             <h2><p id="sum_holder"> </p><small> dollars </small></h2>
+                        </div>
+              </a>
+        </div>
+        </div>
+    </div>
+</div>
+</div>
+
+
+<!-- Modal login -->
+<div id="loginModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Log in</h4>
+      </div>
+      <div class="modal-body" id="loginModalBody">
+
+
+    <form method="POST" action="http://localhost:8080/login" class="form-signin" id="loginForm">
+
+        <div class="form-group">
+            <span></span>
+            <input name="login" type="text" id="login" class="form-control" placeholder="Login" autofocus="true"/>
+            <input name="password" type="password" id="password" class="form-control" placeholder="Password"/>
+            <span></span>
+
+            <button class="btn btn-lg btn-primary btn-block" type="submit" id="loginModalCloseBtn">Log In</button>
+        </div>
+
+
+    </form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<!-- Modal registration -->
+<div id="registrationModal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Create your account</h4>
+      </div>
+      <div class="modal-body" id="registrationModalBody">
+
+      <form method="POST" action="http://localhost:8080/registration" class="form-signin" id="registration">
+
+        <div class="form-group">
+        <input name="login" type="text" id="login" class="form-control" placeholder="Login"  autofocus="true"/>
+        <input name="email" type="text" id="email" class="form-control" placeholder="E-mail" autofocus="true"/>
+        <input name="password" type="password" id="password" class="form-control" placeholder="Password"/>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+        </div>
+
+      </form>
+
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" >Close</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+
+<script>
+
+    function loadPurchasses(){
+
+        $.get("http://localhost:8080/purchase?id=" + sessionStorage['user_id'], function(response, status){
+                text = ''
+                response.purchases.forEach(function(purchase){
+                text +=         '<a href="#" class="list-group-item">'
+                text +=         '<div class="media col-md-3">'
+                text +=    '<figure class="pull-left">'
+                text +=        '<img src="images/' + purchase.product.picturePath + '.jpg" height="200" width="200"'  
+                text += 'alt="placehold.it/350x250" ></figure></div>'
+                text += '<div class="col-md-6">'
+                text +=    '<h2 class="list-group-item-text">' + purchase.product.name + '</h2></div>'
+                text += '<div class="col-md-3 text-center">'
+                text +=    '<h2>' + purchase.product.price + '<small> dollars </small></h2>'
+                text +=    '<p>' + purchase.time + '</p></div></a>'
+                });
+
+                $("#purchases_placeholder").html(text);
+                $("#sum_holder").text(response.sum);
+                });
+    }
+
+    function allProductsLoad(){
+            $.get("http://localhost:8080/products", function(products, status){
+            products.forEach(function(product){
+                    text = $("#productsRows").html();
+                    text += '<div class="col-sm-3">'
+                    text += '<article class="col-item">'
+                    text +=  '<div class="photo">'
+                    text +=   '<a href="#">'
+                    text += '<img src="images/' + product.picturePath + '.jpg"  width="190" height="230" alt="Product Image" /> </a>'
+                    text += '</div>'
+                    text += '<div class="info">'
+                    text +=       '<div class="row">'
+                    text +=     '<div class="price-details col-md-6">'
+                    text +=                '<h1>' + product.name + '</h1>'
+                    text +=                '<span class="price-new">'+ product.price + '</span>'
+                    text +=           '</div>'
+                    text +=        '</div>'
+                    text +=        '<div class="separator clear-left">'
+                    text +=           '<p class="btn-add">'
+                    text +=                '<i class="fa fa-shopping-cart"></i><a href="#id=' + product.id + '"'
+                    text +=  'class="hidden-sm" id="reload" >'
+                    text +=  'Buy</a>'
+                    text +=        '</p>'
+                    text +=            '</div>'
+                    text +=            '<div class="clearfix"></div>'
+                    text +=       '</div>'
+                    text +=     '</article>'
+                    $("#productsRows").html(text);
+            });
+
+        });
+
+    }
+
+    function loadSingleProduct(id){
+        jQuery.ajaxSetup({async:false});
+    var prodId = id;
+    var prodId = prodId == undefined ? '1' : prodId;
+    var feedbacks;
+    $.get("http://localhost:8080/product?id=" + prodId, function(product, status){
+            feedbacks = product.feedbacks;
+            $("#prod_span").text(product.name);
+            $("#avaliable_span").text(product.avaliable);
+            $("#price_span").text(product.price);
+            $("#prod_img").attr('src', "images/" + product.picturePath + ".jpg");
+            $("#purchaseButton").attr('action' , 'localhost:8080/purchase?userId=' + sessionStorage['user_id'] + "&productId=" + id)
+
+          });
+
+
+    var defaultAvatar = 'https://i.imgur.com/BDuNOi3.png';
+    var guestuserId = sessionStorage['user_id']
+    var guestusername =  sessionStorage['user_name']
+
+    function stopLoader() {
+      $('.loader').fadeOut('slow', function() {
+        $('.comments .inner').fadeIn('slow');
+      });
+    }
+
+    $(function() {
+      var allComments = new Array();
+      feedbacks.forEach(function(feedback){
+
+          feedbackAdd = new Object();
+          feedbackAdd.name = feedback.user.login;
+          feedbackAdd.avatar = 'default';
+          feedbackAdd.before = feedback.date;
+          feedbackAdd.message = feedback.comment;
+          allComments.push(feedbackAdd);
+
+      });
+      console.log('The end')
+      var loaded = 0;
+
+      $.each(allComments, function(i, val) {
+        var comment = $('<div class="comment"></div>');
+        var avatar = this.avatar == 'default' ? defaultAvatar : this.avatar;
+        $('<img class="avatar" alt="avatar" src="' + avatar + '" />').appendTo(comment);
+        var contents = $('<div class="body"></div>');
+        $('<a href="./users/' + this.userid + '/" target="_blank">' + this.name + '</a>').appendTo(contents);
+        $('<span>  ' + this.before + '</span><br /><br />').appendTo(contents);
+        $('<p>' + this.message + '</p>').appendTo(contents);
+
+        $('.your-name').fadeOut().remove();
+        $('.your-msg').before('<div class="input your-name dived">' + guestusername + '</div>');
+
+        contents.appendTo(comment);
+        comment.appendTo('.comments .inner');
+        loaded++;
+      });
+
+      if(loaded == allComments.length) stopLoader();
+
+      $('.send-msg').click(function() {
+        var name = guestusername
+        var msg = $('.your-msg').val();
+        var comment = $('<div class="comment" style="display: none;"></div>');
+        var contents = $('<div class="body"></div>')
+
+
+        if((name == '' && guestusername == '') || msg == '') return false;
+        guestusername = guestusername == '' ? name : guestusername;
+        $('.your-msg').val("");
+
+        $('.your-name').fadeOut().remove();
+        $('.your-msg').before('<div class="input your-name dived">' + guestusername + '</div>');
+
+        $('<img class="avatar" alt="avatar" src="' + defaultAvatar + '" />').appendTo(comment);
+        $('<a href="./users/' + guestuserId + '/" target="_blank">' + guestusername + '</a>').appendTo(contents);
+        $('<span>   Right now</span><br /><br />').appendTo(contents);
+        $('<p>' + msg + '</p>').appendTo(contents);
+
+        contents.appendTo(comment);
+        $('.add-new').after(comment);
+        comment.fadeIn('slow');
+          $.post("http://localhost:8080/feedback",
+                    {
+                        user: guestuserId,
+                        product: prodId,
+                        comment: msg
+                    },
+                    function(data, status){
+                        console.log("Data: " + data + "\nStatus: " + status);
+                    });
+      });
+    });
+
+    }
+
+
+
+
+
+    $("#loginForm").submit(function(event) {
+
+
+        event.preventDefault();
+
+
+        var $form = $( this ), url = $form.attr('action');
+
+        var posting = $.post( url, { login: $('#login').val() , password : $('#password').val()} );
+
+        posting.done(function( data ) {
+            if(data.error != undefined){
+                text = ''
+                text +=  '<form method="POST" action="http://localhost:8080/login" class="form-signin">'
+                text +=  '<div class="form-group has-error ">'
+                text +=  '<span></span>'
+                text +=  '<input name="login" type="text" id="login" class="form-control" placeholder="Login" />'
+                text +=  '<input name="password" type="password" id="password" class="form-control" placeholder="Password"/>'
+                text +=  '<span>' + data.error + '</span>'
+                text +=  '<button class="btn btn-lg btn-primary btn-block" type="submit">Log In</button>'
+                text +=  '</div>'
+                text +=  '</form>'
+                $("#loginModalBody").html(text);
+            } else {
+                sessionStorage['user_id'] = data.id
+                sessionStorage['user_name'] = data.name
+                $("#loginModal").click();
+            }
+        });
+    });
+
+
+    $("#registration").submit(function(event) {
+
+        event.preventDefault();
+
+        var $form = $( this ), url = $form.attr('action');
+
+        var posting = $.post( url, { login: $('#login').val() , email: $('#email').val() , password : $('#password').val()} );
+
+        posting.done(function( data ) {
+            if(data.error != undefined){
+                text = ''
+                text +=  '<form method="POST" action="http://localhost:8080/registration" class="form-signin">'
+                text +=  '<div class="form-group has-error ">'
+                text +=  '<input name="login" type="text" id="login" class="form-control" placeholder="Login"  autofocus="true"/>'
+                text +=  '<input name="email" type="text" id="email" class="form-control" placeholder="E-mail" autofocus="true"/>'
+                text +=  '<input name="password" type="password" id="password" class="form-control" placeholder="Password"/>'
+                text +=  '<span>' + data.error + '</span>'
+                text +=  '<button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>'
+                text +=  '</div>'
+                text +=  '</form>'
+                $("#registrationModalBody").html(text);
+            } else {
+                sessionStorage['user_id'] = data.id
+                sessionStorage['user_name'] = data.name
+                $("#registrationModal").click();
+            }
+        });
+    });
+
+
+    function GetURLParameter(sParam)
+    {
+        var paramses = window.location.hash.split('#')
+        if(paramses.length < 2){
+            return undefined;
+        }
+        var sPageURL = paramses[1]
+        var sURLVariables = sPageURL.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) 
+            {
+                return sParameterName[1];
+            }
+        }
+    }
+
+
+       function load(){
+
+        if(!("user_id" in localStorage)){
+
+                $(".singleProductWrapper").hide();
+                $(".productsWrapper").hide();
+                $(".purchassesWrapper").hide();
+
+        }
+        else {
+
+            if(GetURLParameter("id") != undefined){
+                $(".productsWrapper").hide();
+                $(".purchassesWrapper").hide();
+                loadSingleProduct(GetURLParameter("id"))
+            } else {
+                $(".singleProductWrapper").hide();
+                $(".purchassesWrapper").hide();
+                allProductsLoad();
+            }
+    }
+    }
+
+
+    load();
+
+    $(document).on("click", "#reload", function(){
+      var aParams = $(this).attr("href").split('#')[1];
+      var aURLVariables = aParams.split('&');
+        for (var i = 0; i < aURLVariables.length; i++) 
+        {
+            var aParameterName = aURLVariables[i].split('=');
+            if (aParameterName[0] == "id") 
+            {
+                $(".productsWrapper").hide();
+                $(".purchassesWrapper").hide();
+                $(".singleProductWrapper").show();
+                loadSingleProduct(aParameterName[1])
+            }
+        }
+
+    }); 
+
+
+    $(document).on("click", "#allProductsClass", function(){
+
+        $(".singleProductWrapper").hide();
+        $(".purchassesWrapper").hide();
+        if("user_id" in sessionStorage){
+            $(".productsWrapper").show();
+            if(isBlank($("#productsRows").html())) allProductsLoad();
+      }
+    });     
+
+    $(document).on("click", "#purchasesRedirectClass", function(){
+          $(".singleProductWrapper").hide();
+          $(".productsWrapper").hide();
+          if("user_id" in sessionStorage){
+            loadPurchasses()
+            $(".purchassesWrapper").show();
+          }
+    }); 
+
+     $(document).on("click", "#logout", function(){
+          sessionStorage.clear();
+          reload();
+    }); 
+
+    
+function isEmpty(s){
+    return !s.length;    
+}
+
+function isBlank(s){
+    return isEmpty(s.trim());    
+}
+
+</script>
+
+</body>
+</html>
